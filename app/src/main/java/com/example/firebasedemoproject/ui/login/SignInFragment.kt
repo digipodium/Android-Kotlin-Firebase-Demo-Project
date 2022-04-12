@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.firebasedemoproject.MainActivity
 import com.example.firebasedemoproject.R
 import com.example.firebasedemoproject.databinding.FragmentSignInBinding
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -65,11 +66,16 @@ class SignInFragment : Fragment() {
                             null, 0, 0, 0, null
                         )
                     } catch (e: IntentSender.SendIntentException) {
-                        Snackbar.make(binding.root,e.message.toString(),Snackbar.LENGTH_INDEFINITE).show()
+                        Snackbar.make(
+                            binding.root,
+                            e.message.toString(),
+                            Snackbar.LENGTH_INDEFINITE
+                        ).show()
                     }
                 }
                 .addOnFailureListener(requireActivity()) { e ->
-                    Snackbar.make(binding.root,e.message.toString(),Snackbar.LENGTH_INDEFINITE).show()
+                    Snackbar.make(binding.root, e.message.toString(), Snackbar.LENGTH_INDEFINITE)
+                        .show()
                 }
         }
     }
@@ -81,10 +87,9 @@ class SignInFragment : Fragment() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        currentUser?.displayName?.let {
-            Snackbar.make(binding.root,
-                it,Snackbar.LENGTH_INDEFINITE).show()
-        }
+        val i = Intent(requireContext(), MainActivity::class.java)
+        requireActivity().startActivity(i)
+        requireActivity().finish()
     }
 
     override fun onDestroyView() {
@@ -107,13 +112,17 @@ class SignInFragment : Fragment() {
                             val user = auth.currentUser
                             updateUI(user)
                         } else {
-                            Snackbar.make(binding.root, task.exception?.message.toString(),Snackbar.LENGTH_INDEFINITE).show()
+                            Snackbar.make(
+                                binding.root,
+                                task.exception?.message.toString(),
+                                Snackbar.LENGTH_INDEFINITE
+                            ).show()
                             updateUI(null)
                         }
                     }
             }
             else -> {
-                Snackbar.make(binding.root,"no token found",Snackbar.LENGTH_INDEFINITE).show()
+                Snackbar.make(binding.root, "no token found", Snackbar.LENGTH_INDEFINITE).show()
             }
         }
     }
