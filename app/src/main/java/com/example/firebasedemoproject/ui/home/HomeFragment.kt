@@ -21,7 +21,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import java.util.ArrayList
 
-class qHomeFragment : Fragment() {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -43,25 +43,26 @@ class qHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        msglist = arrayListOf()
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter: MessageAdapter = MessageAdapter(R.layout.message_card, load_message())
-        binding.recyclerView.adapter =  adapter
+        val adapter: MessageAdapter = MessageAdapter(R.layout.message_card, msglist)
+        binding.recyclerView.adapter = adapter
+        load_message()
 
     }
 
-    private fun load_message(): ArrayList<Message> {
-        msglist = arrayListOf()
+    private fun load_message() {
         db.collection("messages").get()
             .addOnSuccessListener {
                 it.forEach { data ->
                     msglist.add(data.toObject<Message>())
                 }
+                binding.recyclerView.adapter?.notifyDataSetChanged()
             }
             .addOnFailureListener {
                 Snackbar.make(binding.root, it.message.toString(), Snackbar.LENGTH_INDEFINITE)
                     .show()
             }
-        return msglist
     }
 
     override fun onDestroyView() {
